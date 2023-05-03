@@ -50,6 +50,10 @@ export class SignUpdto {
   bio: string = null;
 
   @IsOptional()
+  @IsString()
+  avatarUrl: string = null;
+
+  @IsOptional()
   role: UserRoles = 'USER';
 
   @IsOptional()
