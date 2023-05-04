@@ -16,14 +16,13 @@ export class AuthService {
 
   async signIn({ email, password }: SignInDto) {
     try {
-      const { hash, id, role } = await this.prisma.user.findUnique({
+      const { hash, id, role } = await this.prisma.user.findUniqueOrThrow({
         where: { email },
       });
-      if (!id) throw new NotFoundException('email or password is wrong');
 
       const passMatches = await argon2.verify(hash, password);
       if (!passMatches)
-        throw new ForbiddenException('email or password is wrong');
+        throw new ForbiddenException('Email or password is wrong');
 
       const { accessToken, refreshToken } = await this.generateTokens({
         userId: id,
