@@ -9,6 +9,7 @@ export interface UpdateRefreshTokenPayload {
 }
 
 export interface AuthResponsePayload {
+  user: any;
   accessToken: string;
   refreshToken: string;
 }

@@ -16,9 +16,10 @@ export class AuthService {
 
   async signIn({ email, password }: SignInDto) {
     try {
-      const { hash, id, role } = await this.prisma.user.findUniqueOrThrow({
-        where: { email },
-      });
+      const { hash, id, role, refresh, ...rest } =
+        await this.prisma.user.findUniqueOrThrow({
+          where: { email },
+        });
 
       const passMatches = await argon2.verify(hash, password);
       if (!passMatches)
@@ -31,7 +32,7 @@ export class AuthService {
 
       await this.updateRefreshToken({ userId: id, token: refreshToken });
 
-      return { accessToken, refreshToken };
+      return { user: { id, role, ...rest }, accessToken, refreshToken };
     } catch (error) {
       throw error;
     }
@@ -41,7 +42,7 @@ export class AuthService {
     try {
       const hash = await argon2.hash(password);
 
-      const { id, role } = await this.prisma.user.create({
+      const { id, role, ...other } = await this.prisma.user.create({
         data: {
           ...rest,
           hash,
@@ -55,7 +56,7 @@ export class AuthService {
 
       await this.updateRefreshToken({ userId: id, token: refreshToken });
 
-      return { accessToken, refreshToken };
+      return { user: { id, role, ...other }, accessToken, refreshToken };
     } catch (error) {
       throw error;
     }
@@ -63,7 +64,7 @@ export class AuthService {
 
   async refreshTokens(payload: UpdateRefreshTokenPayload) {
     try {
-      const { id, refresh, role } = await this.prisma.user.findUnique({
+      const { id, refresh, role, hash, ...rest } = await this.prisma.user.findUnique({
         where: {
           id: payload.userId,
         },
@@ -81,7 +82,7 @@ export class AuthService {
 
       await this.updateRefreshToken({ userId: id, token: refreshToken });
 
-      return { accessToken, refreshToken };
+      return { user: {id, role, ...rest}, accessToken, refreshToken };
     } catch (error) {
       throw error;
     }
