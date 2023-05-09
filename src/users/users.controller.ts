@@ -41,7 +41,7 @@ export class UsersController {
   ) {
     const newBody = {
       ...rest,
-      avatar: filename ? `${process.env.ROOT_URL}files/${filename}` : null,
+      filename,
     };
     return this.usersService.updateOneById(userId, newBody);
   }

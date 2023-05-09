@@ -1,7 +1,7 @@
-import { Injectable } from '@nestjs/common';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { PublicUser } from './types/user.type';
+import { unlink } from 'fs';
 
 const userFields = {
   id: true,
@@ -44,11 +44,27 @@ export class UsersService {
     }
   }
 
-  async updateOneById(userId: string, body: any) {
+  async updateOneById(userId: string, { filename, ...body }: any) {
     try {
+      const { avatar } = await this.prisma.user.findFirstOrThrow({
+        where: { id: userId },
+      });
+
+      if (avatar) {
+        const currentFile = avatar.substring(
+          avatar.indexOf('files/') + 'files/'.length,
+        );
+
+        unlink(`./uploads/${currentFile}`, (err) => {
+          if (err) console.log('Something went wrong');
+        });
+      }
+
+      const newAvatar = `${process.env.ROOT_URL}files/${filename}`;
+
       const user = await this.prisma.user.update({
         where: { id: userId },
-        data: { ...body },
+        data: { ...body, avatar: newAvatar },
         select: { ...userFields },
       });
 
