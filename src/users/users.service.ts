@@ -1,10 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { PublicUser } from './types/user.type';
 
-const retTypes = {
+const userFields = {
   id: true,
+  role: true,
+  email: true,
   username: true,
+  authProvider: true,
   avatarUrl: true,
   firstName: true,
   lastName: true,
@@ -17,11 +21,9 @@ const retTypes = {
 export class UsersService {
   constructor(private prisma: PrismaService) {}
 
-  async findAll() {
+  async findAll(): Promise<PublicUser[]> {
     try {
-      const users = this.prisma.user.findMany({
-        select: { ...retTypes },
-      });
+      const users = this.prisma.user.findMany({ select: { ...userFields } });
 
       return users;
     } catch (error) {
@@ -33,6 +35,7 @@ export class UsersService {
     try {
       const user = await this.prisma.user.findUniqueOrThrow({
         where: { id: userId },
+        select: { ...userFields },
       });
 
       return user;
@@ -46,6 +49,7 @@ export class UsersService {
       const user = await this.prisma.user.update({
         where: { id: userId },
         data: { ...updateUserDto },
+        select: { ...userFields },
       });
 
       return user;

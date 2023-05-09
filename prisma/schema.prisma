@@ -17,7 +17,6 @@ model User {
   authProvider AuthProvider @default(EMAIL)
   hash         String
   role         UserRoles    @default(USER)
-  refresh      String?
   avatarUrl    String?
   firstName    String?
   lastName     String?
@@ -25,8 +24,6 @@ model User {
   messages     Message[]
   createdAt    DateTime     @default(now())
   updatedAt    DateTime     @updatedAt
-
-  @@unique([email])
 }
 
 model Chat {

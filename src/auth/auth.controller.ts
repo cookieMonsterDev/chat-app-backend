@@ -1,9 +1,9 @@
 import { Controller, Post, Body, UseGuards, Get } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { SignUpdto } from './dto/sign-up.dto';
-import { JwtGuard, LocalGuard, RefreshJwtGuard } from './guards';
+import { LocalGuard, RefreshJwtGuard } from './guards';
 import { AuthResponse, Token, UserID } from 'src/common/decorators';
-import { Auth } from './entities/auth.entity';
+import { Auth } from './types/auth.type';
 
 @Controller('auth')
 export class AuthController {
@@ -24,11 +24,5 @@ export class AuthController {
   @Get('refresh')
   refresh(@UserID() userId, @Token() token): Promise<Auth> {
     return this.authService.refreshTokens({ userId, token });
-  }
-
-  @UseGuards(JwtGuard)
-  @Get('signout')
-  signout(@UserID() userId) {
-    return this.authService.signOut(userId);
   }
 }

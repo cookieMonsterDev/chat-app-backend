@@ -1,22 +1,19 @@
-import {
-  ForbiddenException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { ForbiddenException, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { SignUpdto } from './dto/sign-up.dto';
 import * as argon2 from 'argon2';
 import { JwtPayload, UpdateRefreshTokenPayload } from './types';
 import { SignInDto } from './dto/sign-in.dto';
+import { Auth } from './types/auth.type';
 
 @Injectable()
 export class AuthService {
   constructor(private prisma: PrismaService, private Jwt: JwtService) {}
 
-  async signIn({ email, password }: SignInDto) {
+  async signIn({ email, password }: SignInDto): Promise<Auth> {
     try {
-      const { hash, id, role, refresh, ...rest } =
+      const { hash, id, role, ...rest } =
         await this.prisma.user.findUniqueOrThrow({
           where: { email },
         });
@@ -30,22 +27,20 @@ export class AuthService {
         role: role,
       });
 
-      await this.updateRefreshToken({ userId: id, token: refreshToken });
-
       return { user: { id, role, ...rest }, accessToken, refreshToken };
     } catch (error) {
       throw error;
     }
   }
 
-  async signUp({ password, ...rest }: SignUpdto) {
+  async signUp({ password, ...rest }: SignUpdto): Promise<Auth> {
     try {
-      const hash = await argon2.hash(password);
+      const passwordHash = await argon2.hash(password);
 
-      const { id, role, ...other } = await this.prisma.user.create({
+      const { id, role, hash, ...other } = await this.prisma.user.create({
         data: {
           ...rest,
-          hash,
+          hash: passwordHash,
         },
       });
 
@@ -54,60 +49,27 @@ export class AuthService {
         role: role,
       });
 
-      await this.updateRefreshToken({ userId: id, token: refreshToken });
-
       return { user: { id, role, ...other }, accessToken, refreshToken };
     } catch (error) {
       throw error;
     }
   }
 
-  async refreshTokens(payload: UpdateRefreshTokenPayload) {
+  async refreshTokens(payload: UpdateRefreshTokenPayload): Promise<Auth> {
     try {
-      const { id, refresh, role, hash, ...rest } = await this.prisma.user.findUnique({
-        where: {
-          id: payload.userId,
-        },
-      });
-
-      if (!id) throw new NotFoundException('user not found');
-
-      const rtMatches = await argon2.verify(refresh, payload.token);
-      if (!rtMatches) throw new ForbiddenException('Access Denied');
+      const { id, role, hash, ...rest } =
+        await this.prisma.user.findUniqueOrThrow({
+          where: {
+            id: payload.userId,
+          },
+        });
 
       const { accessToken, refreshToken } = await this.generateTokens({
         userId: id,
         role,
       });
 
-      await this.updateRefreshToken({ userId: id, token: refreshToken });
-
-      return { user: {id, role, ...rest}, accessToken, refreshToken };
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  async signOut(userId: string) {
-    try {
-      await this.updateRefreshToken({ userId, token: null });
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  private async updateRefreshToken(payload: UpdateRefreshTokenPayload) {
-    try {
-      const refresh = payload.token ? await argon2.hash(payload.token) : null;
-
-      await this.prisma.user.update({
-        where: {
-          id: payload.userId,
-        },
-        data: {
-          refresh,
-        },
-      });
+      return { user: { id, role, ...rest }, accessToken, refreshToken };
     } catch (error) {
       throw error;
     }

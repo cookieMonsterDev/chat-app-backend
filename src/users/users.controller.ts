@@ -12,7 +12,6 @@ import { UsersService } from './users.service';
 import { JwtGuard } from 'src/auth/guards';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { IsSameIdOrAdminGuard } from 'src/common/guards';
-import { UserID } from 'src/common/decorators';
 
 @UseGuards(JwtGuard)
 @Controller('users')
@@ -22,11 +21,6 @@ export class UsersController {
   @Get()
   findAll() {
     return this.usersService.findAll();
-  }
-
-  @Get('me')
-  findMe(@UserID() userId: string) {
-    return this.usersService.findOneById(userId);
   }
 
   @Get(':userId')
