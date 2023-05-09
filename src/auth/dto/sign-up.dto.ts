@@ -45,15 +45,6 @@ export class SignUpdto {
   lastName: string = null;
 
   @IsOptional()
-  @IsString()
-  @MaxLength(64)
-  bio: string = null;
-
-  @IsOptional()
-  @IsString()
-  avatarUrl: string = null;
-
-  @IsOptional()
   role: UserRoles = 'USER';
 
   @IsOptional()

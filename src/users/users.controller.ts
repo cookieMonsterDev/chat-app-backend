@@ -7,11 +7,14 @@ import {
   HttpCode,
   Put,
   Body,
+  UseInterceptors,
+  UploadedFile,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { JwtGuard } from 'src/auth/guards';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { IsSameIdOrAdminGuard } from 'src/common/guards';
+import { AvatarInterceptor } from 'src/common/interceptors';
 
 @UseGuards(JwtGuard)
 @Controller('users')
@@ -29,9 +32,18 @@ export class UsersController {
   }
 
   @UseGuards(IsSameIdOrAdminGuard)
+  @UseInterceptors(AvatarInterceptor)
   @Put(':userId')
-  updateOneById(@Param('userId') userId: string, @Body() body: UpdateUserDto) {
-    return this.usersService.updateOneById(userId, body);
+  updateOneById(
+    @Param('userId') userId: string,
+    @Body() { avatar, ...rest }: UpdateUserDto,
+    @UploadedFile() { filename }: Express.Multer.File,
+  ) {
+    const newBody = {
+      ...rest,
+      avatar: filename ? `${process.env.ROOT_URL}files/${filename}` : null,
+    };
+    return this.usersService.updateOneById(userId, newBody);
   }
 
   @UseGuards(IsSameIdOrAdminGuard)

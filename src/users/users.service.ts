@@ -9,7 +9,7 @@ const userFields = {
   email: true,
   username: true,
   authProvider: true,
-  avatarUrl: true,
+  avatar: true,
   firstName: true,
   lastName: true,
   bio: true,
@@ -44,11 +44,11 @@ export class UsersService {
     }
   }
 
-  async updateOneById(userId: string, updateUserDto: UpdateUserDto) {
+  async updateOneById(userId: string, body: any) {
     try {
       const user = await this.prisma.user.update({
         where: { id: userId },
-        data: { ...updateUserDto },
+        data: { ...body },
         select: { ...userFields },
       });
 

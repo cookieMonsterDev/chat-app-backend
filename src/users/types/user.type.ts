@@ -5,7 +5,7 @@ export interface User {
   authProvider: string;
   hash: string;
   role: string;
-  avatarUrl: string;
+  avatar: string;
   firstName: string;
   lastName: string;
   bio: string;

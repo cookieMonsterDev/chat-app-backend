@@ -6,6 +6,7 @@ import {
   MinLength,
   Matches,
 } from 'class-validator';
+import { IsFile, IsFileSize, IsImage } from 'src/common/validators';
 
 export class UpdateUserDto {
   @IsOptional()
@@ -43,9 +44,11 @@ export class UpdateUserDto {
   bio: string;
 
   @IsOptional()
-  @IsString()
-  avatarUrl: string;
+  role: UserRoles;
 
   @IsOptional()
-  role: UserRoles;
+  @IsFile()
+  @IsImage()
+  @IsFileSize(1042 * 1024)
+  avatar: Express.Multer.File;
 }
