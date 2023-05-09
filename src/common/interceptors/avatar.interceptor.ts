@@ -6,7 +6,7 @@ import { JwtPayload } from 'src/auth/types';
 
 export const AvatarInterceptor = FileInterceptor('avatar', {
   storage: diskStorage({
-    destination: './uploads/avatars',
+    destination: './uploads',
     filename: (req, file, cb) => {
       const user = req.user as JwtPayload;
       const name = file.originalname.split('.')[0];
