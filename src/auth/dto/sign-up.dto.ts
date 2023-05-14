@@ -6,8 +6,9 @@ import {
   MaxLength,
   Matches,
   IsOptional,
+  IsEnum,
 } from 'class-validator';
-import { AuthProvider, UserRoles } from '@prisma/client';
+import { UserRoles } from 'src/user/entities/user.entity';
 
 export class SignUpdto {
   @IsNotEmpty()
@@ -45,8 +46,6 @@ export class SignUpdto {
   lastName: string = null;
 
   @IsOptional()
-  role: UserRoles = 'USER';
-
-  @IsOptional()
-  authProvider: AuthProvider = 'EMAIL';
+  @IsEnum(UserRoles)
+  role: UserRoles = UserRoles.USER;
 }

@@ -1,20 +1,26 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { PrismaService } from 'src/prisma/prisma.service';
 import { SignUpdto } from './dto/sign-up.dto';
 import * as argon2 from 'argon2';
 import { JwtPayload, UpdateRefreshTokenPayload } from './types';
 import { SignInDto } from './dto/sign-in.dto';
 import { Auth } from './types/auth.type';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { User } from 'src/user/entities/user.entity';
 
 @Injectable()
 export class AuthService {
-  constructor(private prisma: PrismaService, private Jwt: JwtService) {}
+  constructor(
+    @InjectRepository(User)
+    private usersRepository: Repository<User>,
+    private Jwt: JwtService,
+  ) {}
 
   async signIn({ email, password }: SignInDto): Promise<Auth> {
     try {
       const { hash, id, role, ...rest } =
-        await this.prisma.user.findUniqueOrThrow({
+        await this.usersRepository.findOneOrFail({
           where: { email },
         });
 
@@ -37,12 +43,14 @@ export class AuthService {
     try {
       const passwordHash = await argon2.hash(password);
 
-      const { id, role, hash, ...other } = await this.prisma.user.create({
-        data: {
-          ...rest,
-          hash: passwordHash,
-        },
+      const newUser = await this.usersRepository.create({
+        hash: password,
+        ...rest
       });
+
+      const { id, role, hash, ...other } = await this.usersRepository.save(
+        newUser,
+      );
 
       const { accessToken, refreshToken } = await this.generateTokens({
         userId: id,
@@ -58,7 +66,7 @@ export class AuthService {
   async refreshTokens(payload: UpdateRefreshTokenPayload): Promise<Auth> {
     try {
       const { id, role, hash, ...rest } =
-        await this.prisma.user.findUniqueOrThrow({
+        await this.usersRepository.findOneOrFail({
           where: {
             id: payload.userId,
           },
@@ -78,11 +86,11 @@ export class AuthService {
   private async generateTokens(payload: JwtPayload) {
     const [accessToken, refreshToken] = await Promise.all([
       this.Jwt.sign(payload, {
-        secret: process.env.ACCESS_TOKEN_SECRET,
+        secret: 'secret1',
         expiresIn: '15m',
       }),
       this.Jwt.sign(payload, {
-        secret: process.env.REFRESH_TOKEN_SECRET,
+        secret: 'secret2',
         expiresIn: '7d',
       }),
     ]);

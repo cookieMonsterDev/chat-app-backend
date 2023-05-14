@@ -1,7 +1,7 @@
-import { PublicUser } from 'src/users/types/user.type';
+import { User } from 'src/user/entities/user.entity';
 
 export interface Auth {
-  user: PublicUser;
+  user: Partial<User>;
   accessToken: string;
   refreshToken: string;
 }
