@@ -12,7 +12,7 @@ export class AuthController {
 
   @Post('register')
   signUp(@Body() body: Registerdto): Promise<Auth> {
-    return this.authService.signUp(body);
+    return this.authService.register(body);
   }
 
   @UseGuards(LocalGuard)

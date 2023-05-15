@@ -17,7 +17,7 @@ export class AuthService {
     private Jwt: JwtService,
   ) {}
 
-  async signIn({ email, password }: LoginDto): Promise<Auth> {
+  async login({ email, password }: LoginDto): Promise<Auth> {
     try {
       const { hash, id, role, ...rest } =
         await this.usersRepository.findOneOrFail({
@@ -39,7 +39,7 @@ export class AuthService {
     }
   }
 
-  async signUp({ password, ...rest }: Registerdto): Promise<Auth> {
+  async register({ password, ...rest }: Registerdto): Promise<Auth> {
     try {
       const passwordHash = await argon2.hash(password);
 
