@@ -5,12 +5,9 @@ import {
   MinLength,
   MaxLength,
   Matches,
-  IsOptional,
-  IsEnum,
 } from 'class-validator';
-import { UserRoles } from 'src/user/entities/user.entity';
 
-export class SignUpdto {
+export class LoginDto {
   @IsNotEmpty()
   @IsString()
   @IsEmail()
@@ -36,16 +33,4 @@ export class SignUpdto {
     message: 'password must have no spaces',
   })
   password: string;
-
-  @IsOptional()
-  @IsString()
-  firstName: string = null;
-
-  @IsOptional()
-  @IsString()
-  lastName: string = null;
-
-  @IsOptional()
-  @IsEnum(UserRoles)
-  role: UserRoles = UserRoles.USER;
 }

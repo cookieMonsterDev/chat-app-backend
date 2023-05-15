@@ -1,10 +1,10 @@
 import { Injectable, ExecutionContext, CanActivate } from '@nestjs/common';
-import { JwtGuard } from 'src/auth/guards';
-import { JwtPayload } from 'src/auth/types';
+import { JwtGuard } from 'src/core/auth/guards';
 import { Reflector } from '@nestjs/core';
+import { JwtPayload } from 'src/core/auth/types/jwt-payload';
 
 @Injectable()
-export class IsSameIdOrAdminGuard extends JwtGuard implements CanActivate {
+export class UserOrAdminGuard extends JwtGuard implements CanActivate {
   constructor(private readonly reflector: Reflector) {
     super();
   }

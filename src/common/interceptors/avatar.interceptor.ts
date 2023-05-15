@@ -1,6 +1,6 @@
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
-import { JwtPayload } from 'src/auth/types';
+import { JwtPayload } from 'src/core/auth/types/jwt-payload';
 
 // File name format origianlname + userId + now Date + extention
 

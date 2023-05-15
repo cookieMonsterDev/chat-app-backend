@@ -6,11 +6,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
-
-export enum UserRoles {
-  USER = 'USER',
-  ADMIN = 'ADMIN',
-}
+import { UserRoles } from '../types/user-roles';
 
 @Entity()
 export class User {

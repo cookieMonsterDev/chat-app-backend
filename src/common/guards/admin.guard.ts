@@ -1,6 +1,6 @@
 import { Injectable, ExecutionContext } from '@nestjs/common';
-import { JwtGuard } from 'src/auth/guards';
-import { JwtPayload } from 'src/auth/types';
+import { JwtGuard } from 'src/core/auth/guards';
+import { JwtPayload } from 'src/core/auth/types/jwt-payload';
 
 @Injectable()
 export class IsAdminGuard extends JwtGuard {

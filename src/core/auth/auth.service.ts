@@ -1,13 +1,13 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
-import { SignUpdto } from './dto/sign-up.dto';
-import * as argon2 from 'argon2';
-import { JwtPayload, UpdateRefreshTokenPayload } from './types';
-import { SignInDto } from './dto/sign-in.dto';
-import { Auth } from './types/auth.type';
+import { User } from '../user/entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Registerdto } from './dto/register.dto';
+import { JwtPayload } from './types/jwt-payload';
+import { LoginDto } from './dto/login.dto';
+import { Auth } from '../types/auth.type';
+import { JwtService } from '@nestjs/jwt';
 import { Repository } from 'typeorm';
-import { User } from 'src/user/entities/user.entity';
+import * as argon2 from 'argon2';
 
 @Injectable()
 export class AuthService {
@@ -17,7 +17,7 @@ export class AuthService {
     private Jwt: JwtService,
   ) {}
 
-  async signIn({ email, password }: SignInDto): Promise<Auth> {
+  async signIn({ email, password }: LoginDto): Promise<Auth> {
     try {
       const { hash, id, role, ...rest } =
         await this.usersRepository.findOneOrFail({
@@ -39,13 +39,13 @@ export class AuthService {
     }
   }
 
-  async signUp({ password, ...rest }: SignUpdto): Promise<Auth> {
+  async signUp({ password, ...rest }: Registerdto): Promise<Auth> {
     try {
       const passwordHash = await argon2.hash(password);
 
       const newUser = await this.usersRepository.create({
-        hash: password,
-        ...rest
+        hash: passwordHash,
+        ...rest,
       });
 
       const { id, role, hash, ...other } = await this.usersRepository.save(
@@ -63,12 +63,12 @@ export class AuthService {
     }
   }
 
-  async refreshTokens(payload: UpdateRefreshTokenPayload): Promise<Auth> {
+  async refreshTokens(userId: string): Promise<Auth> {
     try {
       const { id, role, hash, ...rest } =
         await this.usersRepository.findOneOrFail({
           where: {
-            id: payload.userId,
+            id: userId,
           },
         });
 
