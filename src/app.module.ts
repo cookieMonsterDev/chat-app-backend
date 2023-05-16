@@ -18,7 +18,6 @@ import {
     AuthModule,
     UserModule,
     ChatModule,
-    SearchModule,
     MessageModule,
   ],
   providers: [

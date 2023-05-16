@@ -8,9 +8,13 @@ import {
   IsOptional,
   IsEnum,
 } from 'class-validator';
-import { UserRoles } from 'src/core/user/types/user-roles';
+import { UserRoles } from 'src/core/user/types/user-roles.types';
 
 export class Registerdto {
+  @IsOptional()
+  @IsString()
+  username: string;
+
   @IsNotEmpty()
   @IsString()
   @IsEmail()

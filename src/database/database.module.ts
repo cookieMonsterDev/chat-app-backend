@@ -12,7 +12,6 @@ import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
         password: 'root',
         database: 'test',
         autoLoadEntities: true,
-        synchronize: true,
       }),
     }),
   ],

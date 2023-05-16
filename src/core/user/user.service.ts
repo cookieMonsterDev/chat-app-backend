@@ -1,7 +1,9 @@
+import { Repository } from 'typeorm';
 import { Injectable } from '@nestjs/common';
 import { User } from './entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { UserQueriesDto } from './dto/user-queries.dto';
+import publicUserSelect from './types/user-public.types';
 
 @Injectable()
 export class UserService {
@@ -10,13 +12,52 @@ export class UserService {
     private usersRepository: Repository<User>,
   ) {}
 
-  async findOne(userId: string) {
+  async findAll(queries: UserQueriesDto) {
+    try {
+      const users = await this.usersRepository.find({
+        where: {
+          id: queries.id,
+          username: queries.username,
+          firstName: queries.firstName,
+          lastName: queries.lastName,
+        },
+        order: {
+          username: queries.orderByUsername,
+          firstName: queries.orderByFirstName,
+          lastName: queries.orderByLastName,
+          createdAt: queries.orderByCreatedAt,
+          updatedAt: queries.orderByUpdatedAt,
+        },
+        select: publicUserSelect,
+      });
+
+      return users;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async findOneById(userId: string) {
+    try {
+      const user = await this.usersRepository.findOneOrFail({
+        where: { id: userId },
+        select: publicUserSelect,
+      });
+
+      return user;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async deleteOneById(userId: string) {
     try {
       const user = await this.usersRepository.findOneOrFail({
         where: { id: userId },
       });
+      await this.usersRepository.remove(user);
 
-      return user;
+      return;
     } catch (error) {
       throw error;
     }
