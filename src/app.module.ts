@@ -1,9 +1,15 @@
 import { Module } from '@nestjs/common';
 import { DatabaseModule } from './database/database.module';
-import { AuthModule, UserModule } from './core';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import throttlerConfig from './security/throttler.config';
 import { APP_GUARD } from '@nestjs/core';
+import {
+  AuthModule,
+  ChatModule,
+  SearchModule,
+  UserModule,
+  MessageModule,
+} from './core';
 
 @Module({
   imports: [
@@ -11,6 +17,9 @@ import { APP_GUARD } from '@nestjs/core';
     DatabaseModule,
     AuthModule,
     UserModule,
+    ChatModule,
+    SearchModule,
+    MessageModule,
   ],
   providers: [
     {
