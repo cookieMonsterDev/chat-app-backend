@@ -1,26 +1,56 @@
 import { Injectable } from '@nestjs/common';
 import { CreateChatDto } from './dto/create-chat.dto';
 import { UpdateChatDto } from './dto/update-chat.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { v4 as uuid } from 'uuid';
+import { Chat } from './entities/chat.entity';
 
 @Injectable()
 export class ChatService {
-  create(createChatDto: CreateChatDto) {
-    return 'This action adds a new chat';
+  constructor(
+    @InjectRepository(Chat) private chatRepository: Repository<Chat>,
+  ) {}
+
+  async create(data: CreateChatDto) {
+    try {
+      const newChat = await this.chatRepository.create({
+        users: [
+          { id: '0c1df6c4-5045-4b3d-8879-612ae2b0c93d' },
+          { id: 'a8996662-d128-4299-868b-54e5bd401be5' },
+        ],
+        id: uuid()
+      });
+
+      const chat = await this.chatRepository.save(newChat);
+
+      return chat;
+    } catch (error) {
+      throw error;
+    }
   }
 
-  findAll() {
-    return `This action returns all chat`;
+  async findAll() {
+    try {
+      const chats = await this.chatRepository.find();
+
+      return chats;
+    } catch (error) {
+      console.log(error)
+      throw error;
+    }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} chat`;
-  }
+  async findOneById(chatId: string) {
+    try {
+      const chat = await this.chatRepository.findOneOrFail({
+        where: { id: chatId },
+        relations: ['messages', 'users'],
+      });
 
-  update(id: number, updateChatDto: UpdateChatDto) {
-    return `This action updates a #${id} chat`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} chat`;
+      return chat;
+    } catch (error) {
+      throw error;
+    }
   }
 }

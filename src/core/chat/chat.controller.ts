@@ -3,21 +3,26 @@ import {
   Get,
   Post,
   Body,
-  Patch,
+  Put,
   Param,
   Delete,
+  UseGuards,
+  HttpCode,
 } from '@nestjs/common';
 import { ChatService } from './chat.service';
 import { CreateChatDto } from './dto/create-chat.dto';
 import { UpdateChatDto } from './dto/update-chat.dto';
+import { JwtGuard } from '../auth/guards';
+import { UserOrAdminGuard } from 'src/common/guards';
 
-@Controller('chat')
+@UseGuards(JwtGuard)
+@Controller('chats')
 export class ChatController {
   constructor(private readonly chatService: ChatService) {}
 
   @Post()
-  create(@Body() createChatDto: CreateChatDto) {
-    return this.chatService.create(createChatDto);
+  create(@Body() body: CreateChatDto) {
+    return this.chatService.create(body);
   }
 
   @Get()
@@ -27,16 +32,18 @@ export class ChatController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.chatService.findOne(+id);
+    return this.chatService.findOneById(id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateChatDto: UpdateChatDto) {
-    return this.chatService.update(+id, updateChatDto);
+  @Put(':id')
+  updateOne(@Param('id') id: string) {
+    return id;
   }
 
+  @UseGuards(UserOrAdminGuard)
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.chatService.remove(+id);
+  @HttpCode(204)
+  delete(@Param('id') id: string) {
+    return id;
   }
 }

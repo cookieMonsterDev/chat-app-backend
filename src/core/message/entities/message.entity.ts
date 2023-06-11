@@ -1,21 +1,24 @@
 import {
   Entity,
   Column,
-  PrimaryGeneratedColumn,
+  PrimaryColumn,
   CreateDateColumn,
   UpdateDateColumn,
   ManyToOne,
 } from 'typeorm';
-import { v4 as uuidv4 } from 'uuid';
 import { User } from 'src/core/user/entities/user.entity';
+import { Chat } from 'src/core/chat/entities/chat.entity';
 
-@Entity()
+@Entity({ name: 'messages' })
 export class Message {
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryColumn('uuid')
   id: string;
 
   @ManyToOne(() => User, (user) => user.messages)
   user: User;
+
+  @ManyToOne(() => Chat, (chat) => chat.messages)
+  chat: Chat;
 
   @Column()
   text: string;
@@ -25,8 +28,4 @@ export class Message {
 
   @UpdateDateColumn({ type: 'timestamp' })
   updatedAt: Date;
-
-  constructor() {
-    this.id = uuidv4();
-  }
 }

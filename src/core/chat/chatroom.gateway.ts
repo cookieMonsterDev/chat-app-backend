@@ -4,6 +4,7 @@ import {
   WebSocketServer,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
+import { Message } from '../message/entities/message.entity';
 
 @WebSocketGateway(9999, { cors: '*' })
 export class ChatRoomGateway {
@@ -19,10 +20,8 @@ export class ChatRoomGateway {
     const chatId = client.handshake.query.chatId as string;
     client.leave(chatId);
   }
-
-  //TODO should accept message-create-dto
   @SubscribeMessage('message')
-  handleMessage(client: Socket, payload: string) {
+  handleMessage(client: Socket, payload: Message) {
     const chatId = client.handshake.query.chatId as string;
     const savedMessage = 'test'; // async func should return message
     this.server.to(chatId).emit('message', savedMessage);

@@ -28,7 +28,7 @@ export class UserController {
   }
 
   @UseGuards(UserOrAdminGuard)
-  @Delete('id')
+  @Delete(':id')
   @HttpCode(204)
   deleteOneById(@Param('id') id: string) {
     return this.userService.deleteOneById(id);

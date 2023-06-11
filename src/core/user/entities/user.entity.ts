@@ -1,21 +1,20 @@
 import {
   Entity,
   Column,
-  PrimaryGeneratedColumn,
+  PrimaryColumn,
   CreateDateColumn,
   UpdateDateColumn,
   OneToMany,
   ManyToMany,
   JoinTable,
 } from 'typeorm';
-import { v4 as uuidv4 } from 'uuid';
 import { UserRoles } from '../types/user-roles.types';
 import { Message } from 'src/core/message/entities/message.entity';
 import { Chat } from 'src/core/chat/entities/chat.entity';
 
-@Entity()
+@Entity({ name: 'users' })
 export class User {
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryColumn('uuid')
   id: string;
 
   @Column({ unique: true, nullable: true })

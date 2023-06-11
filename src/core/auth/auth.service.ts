@@ -7,6 +7,7 @@ import { LoginDto } from './dto/login.dto';
 import { Auth } from '../types/auth.type';
 import { JwtService } from '@nestjs/jwt';
 import { Repository } from 'typeorm';
+import { v4 as uuid } from 'uuid';
 import * as argon2 from 'argon2';
 
 @Injectable()
@@ -46,6 +47,7 @@ export class AuthService {
       const newUser = await this.usersRepository.create({
         hash: passwordHash,
         ...rest,
+        id: uuid(),
       });
 
       const { id, role, hash, ...other } = await this.usersRepository.save(
@@ -59,6 +61,7 @@ export class AuthService {
 
       return { user: { id, role, ...other }, accessToken, refreshToken };
     } catch (error) {
+      console.log(error);
       throw error;
     }
   }

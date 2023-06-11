@@ -6,7 +6,6 @@ import { APP_GUARD } from '@nestjs/core';
 import {
   AuthModule,
   ChatModule,
-  SearchModule,
   UserModule,
   MessageModule,
 } from './core';

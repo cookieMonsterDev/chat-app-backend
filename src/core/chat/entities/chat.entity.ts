@@ -1,18 +1,19 @@
 import {
   Entity,
   Column,
-  PrimaryGeneratedColumn,
+  PrimaryColumn,
   CreateDateColumn,
   UpdateDateColumn,
   ManyToMany,
+  OneToMany,
 } from 'typeorm';
-import { v4 as uuidv4 } from 'uuid';
 import { ChatTypes } from '../types/chat-types';
 import { User } from 'src/core/user/entities/user.entity';
+import { Message } from 'src/core/message/entities/message.entity';
 
-@Entity()
+@Entity({ name: 'chats' })
 export class Chat {
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryColumn('uuid')
   id: string;
 
   @Column({ nullable: true })
@@ -24,13 +25,12 @@ export class Chat {
   @ManyToMany(() => User, (user) => user.chats)
   users: User[];
 
+  @OneToMany(() => Message, (message) => message.chat)
+  messages: Message[];
+
   @CreateDateColumn({ type: 'timestamp' })
   createdAt: Date;
 
   @UpdateDateColumn({ type: 'timestamp' })
   updatedAt: Date;
-
-  constructor() {
-    this.id = uuidv4();
-  }
 }
