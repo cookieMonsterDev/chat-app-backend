@@ -74,7 +74,7 @@ export class ChatService {
     }
   }
 
-  async updateObneById(chatId: string, data: UpdateChatDto) {
+  async updateOneById(chatId: string, data: UpdateChatDto) {
     try {
       const users = data.users.map((e) => {
         return {

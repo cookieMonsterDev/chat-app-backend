@@ -20,6 +20,7 @@ export class ChatRoomGateway {
     const chatId = client.handshake.query.chatId as string;
     client.leave(chatId);
   }
+  
   @SubscribeMessage('message')
   handleMessage(client: Socket, payload: Message) {
     const chatId = client.handshake.query.chatId as string;

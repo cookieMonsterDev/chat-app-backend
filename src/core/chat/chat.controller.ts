@@ -38,7 +38,7 @@ export class ChatController {
 
   @Put(':id')
   updateOne(@Param('id') id: string, body: UpdateChatDto) {
-    return this.chatService.updateObneById(id, body);
+    return this.chatService.updateOneById(id, body);
   }
 
   @Delete(':id')
