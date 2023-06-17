@@ -12,7 +12,7 @@ export class UserOrAdminGuard extends JwtGuard implements CanActivate {
   canActivate(context: ExecutionContext) {
     const req = context.switchToHttp().getRequest();
     const user = req.user as JwtPayload;
-    const userId = req.params.userId as string;
+    const userId = req.params.Id as string;
     return user.userId === userId || user.role === 'ADMIN';
   }
 }

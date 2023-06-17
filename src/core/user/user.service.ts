@@ -3,7 +3,8 @@ import { Injectable } from '@nestjs/common';
 import { User } from './entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserQueriesDto } from './dto/user-queries.dto';
-import publicUserSelect from './types/user-public.types';
+import publicUserSelect from 'src/common/selecrs/public-user.select';
+
 
 @Injectable()
 export class UserService {

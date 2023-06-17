@@ -5,6 +5,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 import { Chat } from './entities/chat.entity';
+import { ChatQueriesDto } from './dto/chat-queries.dto';
+import publicUserSelect from 'src/common/selecrs/public-user.select';
 
 @Injectable()
 export class ChatService {
@@ -14,12 +16,17 @@ export class ChatService {
 
   async create(data: CreateChatDto) {
     try {
+      const users = data.users.map((e) => {
+        return {
+          id: e,
+        };
+      });
+
       const newChat = await this.chatRepository.create({
-        users: [
-          { id: '0c1df6c4-5045-4b3d-8879-612ae2b0c93d' },
-          { id: 'a8996662-d128-4299-868b-54e5bd401be5' },
-        ],
-        id: uuid()
+        name: data.name,
+        chatType: data.chatType,
+        users,
+        id: uuid(),
       });
 
       const chat = await this.chatRepository.save(newChat);
@@ -30,13 +37,23 @@ export class ChatService {
     }
   }
 
-  async findAll() {
+  async findAll(queries: ChatQueriesDto) {
     try {
-      const chats = await this.chatRepository.find();
+      const chats = await this.chatRepository.find({
+        where: {
+          id: queries.id,
+          users: queries.userId && { id: queries.userId },
+          messages: queries.messageId && { id: queries.messageId },
+        },
+        order: {
+          createdAt: queries.orderByCreatedAt,
+          updatedAt: queries.orderByUpdatedAt,
+        },
+      });
 
       return chats;
     } catch (error) {
-      console.log(error)
+      console.log(error);
       throw error;
     }
   }
@@ -46,9 +63,52 @@ export class ChatService {
       const chat = await this.chatRepository.findOneOrFail({
         where: { id: chatId },
         relations: ['messages', 'users'],
+        select: {
+          users: publicUserSelect,
+        },
       });
 
       return chat;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async updateObneById(chatId: string, data: UpdateChatDto) {
+    try {
+      const users = data.users.map((e) => {
+        return {
+          id: e,
+        };
+      });
+
+      const messages = data.messages.map((e) => {
+        return {
+          id: e,
+        };
+      });
+
+      const newChat = await this.chatRepository.update(chatId, {
+        name: data.name,
+        chatType: data.chatType,
+        messages,
+        users,
+      });
+
+      return newChat;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async deleteOneById(chatId: string) {
+    try {
+      const user = await this.chatRepository.findOneOrFail({
+        where: { id: chatId },
+      });
+      await this.chatRepository.remove(user);
+
+      return;
     } catch (error) {
       throw error;
     }

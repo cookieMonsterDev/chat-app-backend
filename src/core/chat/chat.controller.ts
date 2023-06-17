@@ -8,12 +8,13 @@ import {
   Delete,
   UseGuards,
   HttpCode,
+  Query,
 } from '@nestjs/common';
 import { ChatService } from './chat.service';
 import { CreateChatDto } from './dto/create-chat.dto';
 import { UpdateChatDto } from './dto/update-chat.dto';
 import { JwtGuard } from '../auth/guards';
-import { UserOrAdminGuard } from 'src/common/guards';
+import { ChatQueriesDto } from './dto/chat-queries.dto';
 
 @UseGuards(JwtGuard)
 @Controller('chats')
@@ -26,8 +27,8 @@ export class ChatController {
   }
 
   @Get()
-  findAll() {
-    return this.chatService.findAll();
+  findAll(@Query() queries: ChatQueriesDto) {
+    return this.chatService.findAll(queries);
   }
 
   @Get(':id')
@@ -36,14 +37,13 @@ export class ChatController {
   }
 
   @Put(':id')
-  updateOne(@Param('id') id: string) {
-    return id;
+  updateOne(@Param('id') id: string, body: UpdateChatDto) {
+    return this.chatService.updateObneById(id, body);
   }
 
-  @UseGuards(UserOrAdminGuard)
   @Delete(':id')
   @HttpCode(204)
-  delete(@Param('id') id: string) {
-    return id;
+  deleteOneById(@Param('id') id: string) {
+    return this.chatService.deleteOneById(id);
   }
 }

@@ -2,30 +2,15 @@ import { IsOptional } from 'class-validator';
 import { Order } from 'src/common/types/order.types';
 import { IsOrder } from 'src/common/validators';
 
-export class UserQueriesDto {
+export class ChatQueriesDto {
   @IsOptional()
   id: string;
 
   @IsOptional()
-  username: string;
+  userId: string;
 
   @IsOptional()
-  firstName: string;
-
-  @IsOptional()
-  lastName: string;
-
-  @IsOptional()
-  @IsOrder()
-  orderByUsername: Order = 'ASC';
-
-  @IsOptional()
-  @IsOrder()
-  orderByFirstName: Order;
-
-  @IsOptional()
-  @IsOrder()
-  orderByLastName: Order;
+  messageId: string;
 
   @IsOptional()
   @IsOrder()
