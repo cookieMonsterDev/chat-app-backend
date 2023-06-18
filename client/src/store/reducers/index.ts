@@ -3,12 +3,13 @@ import { combineReducers } from "@reduxjs/toolkit";
 import storage from "redux-persist/lib/storage";
 import { persistReducer } from "redux-persist";
 import authReducer from "./auth/auth.slice";
+import chatsReducer from './chats/chats.slice'
 import { workRefreshAuth, workSignIn, workSignUp } from "./auth";
 
 const rootPersistConfig = {
   key: "root",
   storage,
-  blacklist: ["auth"],
+  blacklist: ["auth", "chats"],
 };
 
 const authPersistConfig = {
@@ -19,6 +20,7 @@ const authPersistConfig = {
 
 const rootReducer = combineReducers({
   auth: persistReducer(authPersistConfig, authReducer),
+  chats: chatsReducer
 });
 
 export function* rootSaga() {

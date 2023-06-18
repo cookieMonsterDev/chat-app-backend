@@ -10,6 +10,7 @@ import { SignUpPayload } from "../../store/reducers/auth";
 
 export const initialValues: SignUpPayload = {
   firstName: "",
+  lastName: "",
   email: "",
   password: "",
 };

@@ -3,6 +3,8 @@ import { ChatCardProps } from "./ChatCard.types";
 import { Avatar } from "@components/Avatar";
 import randomBgGenerator from "../../base/twBgColorGenerator";
 import cn from "classnames";
+import { useAppDispatch } from "../../hooks/ReduxHooks";
+import { setCurrentChat } from "../../store/reducers/chats";
 
 export const ChatCardComponent: React.FC<ChatCardProps> = ({
   chatName,
@@ -12,6 +14,8 @@ export const ChatCardComponent: React.FC<ChatCardProps> = ({
   lastMessageTime = new Date(),
   isActive = false,
 }) => {
+  const dispatch = useAppDispatch();
+
   const timeFormater = new Intl.DateTimeFormat("en-GB", {
     hour: "numeric",
     minute: "numeric",
@@ -22,11 +26,16 @@ export const ChatCardComponent: React.FC<ChatCardProps> = ({
     { "bg-sky-400": isActive }
   );
 
+  const handleClick = () => {
+    console.log(chatName)
+    dispatch(setCurrentChat(chatName));
+  };
+
   return (
-    <li className={cardClass}>
+    <li className={cardClass} onClick={handleClick}>
       <Avatar
         name={chatName}
-        imgUrl={imgUrl}
+        imgUrl={imgUrl!}
         style={{ maxWidth: "3rem", maxHeight: "3rem" }}
         bgColor={randomBgGenerator()}
       />

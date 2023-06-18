@@ -8,13 +8,13 @@ import { Loader } from "@components/Loader";
 import { signUp } from "../../store/reducers/auth";
 
 const Register = () => {
-  const { user, isLoading } = useAppSelector((state) => state.auth);
+  const { user, isLoading, accessToken } = useAppSelector((state) => state.auth);
   const navigator = useNavigate();
   const dispatch = useAppDispatch();
 
   useEffect(() => {
 
-    if (user) navigator("/");
+    if (user && accessToken) navigator("/");
   }, [user]);
 
   const formik = useFormik({
@@ -78,7 +78,7 @@ const Register = () => {
             type="submit"
             className="w-full bg-sky-500 p-1 rounded-lg text-white text-lg font-medium hover:bg-sky-200 hover:text-sky-500 transition-colors"
           >
-            Sign in
+            Sign Up
           </button>
         )}
       </form>

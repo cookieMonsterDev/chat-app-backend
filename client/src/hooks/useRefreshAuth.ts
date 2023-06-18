@@ -12,7 +12,11 @@ const useRefreshAuth = () => {
   };
 
   useEffect(() => {
-    const interval = setInterval(refresh, 10000);
+    refresh()
+  }, [])
+
+  useEffect(() => {
+    const interval = setInterval(refresh, 100000);
 
     return () => {
       clearInterval(interval);

@@ -8,12 +8,12 @@ import { Loader } from "@components/Loader";
 import { signIn } from "../../store/reducers/auth";
 
 const Login = () => {
-  const { user, isLoading, errorMessage } = useAppSelector((state) => state.auth);
+  const { user, isLoading, errorMessage, accessToken } = useAppSelector((state) => state.auth);
   const navigator = useNavigate();
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    if (user) navigator("/");
+    if (user && accessToken) navigator("/");
   }, [user]);
 
   const formik = useFormik({

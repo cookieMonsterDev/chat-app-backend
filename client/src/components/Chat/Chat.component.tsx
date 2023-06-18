@@ -1,6 +1,13 @@
-import React from "react";
+import { useEffect } from "react";
+import { useAppSelector } from "../../hooks/ReduxHooks";
 
 export const ChatComponent: React.FC = () => {
+  const { currentChat } = useAppSelector((state) => state.chats);
+
+  useEffect(() => {
+    console.log(currentChat);
+  }, [currentChat]);
+
   return (
     <article className="w-full min-h-full flex flex-col items-center">
       <header className="w-full h-14 bg-blue-100 flex items-center">
@@ -8,7 +15,10 @@ export const ChatComponent: React.FC = () => {
           Some random person
         </h1>
       </header>
-      <main className="w-full bg-white flex flex-col-reverse gap-2 p-2 overflow-auto" style={{maxHeight: 'calc(100vh - (3.5rem + 5rem))'}}>
+      <main
+        className="w-full bg-white flex flex-col-reverse gap-2 p-2 overflow-auto"
+        style={{ maxHeight: "calc(100vh - (3.5rem + 5rem))" }}
+      >
         <div className="w-fit max-w-3xl bg-lime-400 px-2 py-1 rounded-xl self-end">
           TEST - 1
         </div>
@@ -18,7 +28,10 @@ export const ChatComponent: React.FC = () => {
         <div className="w-fit max-w-3xl bg-lime-400 px-2 py-1 rounded-xl self-end">
           TEST
         </div>
-        <div className="w-fit bg-lime-400 px-2 py-1 rounded-xl" style={{maxWidth: '65%'}}>
+        <div
+          className="w-fit bg-lime-400 px-2 py-1 rounded-xl"
+          style={{ maxWidth: "65%" }}
+        >
           Lorem, ipsum dolor sit amet consectetur adipisicing elit. Laudantium,
           delectus quis? Nulla ab excepturi earum a repudiandae praesentium
           quae, qui facilis blanditiis eum quis accusamus, veniam distinctio
@@ -83,7 +96,6 @@ export const ChatComponent: React.FC = () => {
         <div className="w-fit max-w-3xl bg-lime-400 px-2 py-1 rounded-xl">
           TEST
         </div>
-      
       </main>
       <footer className="w-full h-20 bg-blue-100"></footer>
     </article>

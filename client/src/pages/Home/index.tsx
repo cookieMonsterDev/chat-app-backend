@@ -5,11 +5,11 @@ import { SideBar } from "@components/SideBar";
 import { Chat } from "@components/Chat";
 
 const Home = () => {
-  const { user } = useAppSelector((state) => state.auth);
+  const { user, accessToken } = useAppSelector((state) => state.auth);
   const navigator = useNavigate();
 
   useEffect(() => {
-    if (!user) navigator("/login");
+    if (!user || !accessToken) navigator("/login");
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useAppSelector } from "../../hooks/ReduxHooks";
 import { Avatar } from "@components/Avatar";
 import { ChatCard } from "@components/ChatCard";
+import { Search } from "@components/Search";
 
 export const SideBarComponent: React.FC = () => {
   const { user } = useAppSelector((state) => state.auth);
@@ -23,6 +24,8 @@ export const SideBarComponent: React.FC = () => {
           {fullName}
         </h1>
       </section>
+      <hr className="w-11/12 mb-2 h-1 self-center bg-blue-700 rounded" />
+      <Search />
       <hr className="w-11/12 mb-2 h-1 self-center bg-blue-700 rounded" />
       <ul className="px-2 overflow-auto flex flex-col gap-2">
         {arr.map((e, i) => (
