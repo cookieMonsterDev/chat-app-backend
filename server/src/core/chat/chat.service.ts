@@ -49,7 +49,10 @@ export class ChatService {
           createdAt: queries.orderByCreatedAt,
           updatedAt: queries.orderByUpdatedAt,
         },
+        relations: ['users']
       });
+
+      
 
       return chats;
     } catch (error) {

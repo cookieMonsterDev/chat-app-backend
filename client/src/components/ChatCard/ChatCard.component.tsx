@@ -1,19 +1,20 @@
 import React from "react";
 import { ChatCardProps } from "./ChatCard.types";
 import { Avatar } from "@components/Avatar";
-import randomBgGenerator from "../../base/twBgColorGenerator";
 import cn from "classnames";
-import { useAppDispatch } from "../../hooks/ReduxHooks";
+import { useAppDispatch, useAppSelector } from "../../hooks/ReduxHooks";
 import { setCurrentChat } from "../../store/reducers/chats";
 
 export const ChatCardComponent: React.FC<ChatCardProps> = ({
+  chatId,
   chatName,
   imgUrl,
+  bgColor,
   unreadCounter,
   lastMessage,
   lastMessageTime = new Date(),
-  isActive = false,
 }) => {
+  const { currentChat } = useAppSelector((state) => state.chats)
   const dispatch = useAppDispatch();
 
   const timeFormater = new Intl.DateTimeFormat("en-GB", {
@@ -23,12 +24,11 @@ export const ChatCardComponent: React.FC<ChatCardProps> = ({
 
   const cardClass = cn(
     "w-full py-0.5 pl-1 bg-white flex items-center rounded-md relative",
-    { "bg-sky-400": isActive }
+    { "bg-sky-400": chatId === currentChat }
   );
 
   const handleClick = () => {
-    console.log(chatName)
-    dispatch(setCurrentChat(chatName));
+    dispatch(setCurrentChat(chatId));
   };
 
   return (
@@ -37,7 +37,7 @@ export const ChatCardComponent: React.FC<ChatCardProps> = ({
         name={chatName}
         imgUrl={imgUrl!}
         style={{ maxWidth: "3rem", maxHeight: "3rem" }}
-        bgColor={randomBgGenerator()}
+        bgColor={bgColor}
       />
       <section className="w-full grid grid-cols-2">
         <h2 className="ml-2 overflow-hidden text-ellipsis text-xl font-semibold">
